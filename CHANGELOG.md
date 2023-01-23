@@ -2,7 +2,39 @@
 
 ## [Unreleased](https://github.com/OpenVoiceOS/ovos-plugin-manager/tree/HEAD)
 
-[Full Changelog](https://github.com/OpenVoiceOS/ovos-plugin-manager/compare/V0.0.21a3...HEAD)
+[Full Changelog](https://github.com/OpenVoiceOS/ovos-plugin-manager/compare/V0.0.21a7...HEAD)
+
+**Fixed bugs:**
+
+- fixed bug with 'emit' [\#103](https://github.com/OpenVoiceOS/ovos-plugin-manager/pull/103) ([builderjer](https://github.com/builderjer))
+
+## [V0.0.21a7](https://github.com/OpenVoiceOS/ovos-plugin-manager/tree/V0.0.21a7) (2023-01-20)
+
+[Full Changelog](https://github.com/OpenVoiceOS/ovos-plugin-manager/compare/V0.0.21a6...V0.0.21a7)
+
+**Implemented enhancements:**
+
+- feat/ww fallback [\#99](https://github.com/OpenVoiceOS/ovos-plugin-manager/pull/99) ([JarbasAl](https://github.com/JarbasAl))
+
+## [V0.0.21a6](https://github.com/OpenVoiceOS/ovos-plugin-manager/tree/V0.0.21a6) (2022-12-28)
+
+[Full Changelog](https://github.com/OpenVoiceOS/ovos-plugin-manager/compare/V0.0.21a5...V0.0.21a6)
+
+**Implemented enhancements:**
+
+- Feat/ocp stream extractors [\#100](https://github.com/OpenVoiceOS/ovos-plugin-manager/pull/100) ([JarbasAl](https://github.com/JarbasAl))
+
+## [V0.0.21a5](https://github.com/OpenVoiceOS/ovos-plugin-manager/tree/V0.0.21a5) (2022-12-10)
+
+[Full Changelog](https://github.com/OpenVoiceOS/ovos-plugin-manager/compare/V0.0.21a4...V0.0.21a5)
+
+**Merged pull requests:**
+
+- Add alternating LED animation [\#98](https://github.com/OpenVoiceOS/ovos-plugin-manager/pull/98) ([NeonDaniel](https://github.com/NeonDaniel))
+
+## [V0.0.21a4](https://github.com/OpenVoiceOS/ovos-plugin-manager/tree/V0.0.21a4) (2022-12-05)
+
+[Full Changelog](https://github.com/OpenVoiceOS/ovos-plugin-manager/compare/V0.0.21a3...V0.0.21a4)
 
 **Fixed bugs:**
 
