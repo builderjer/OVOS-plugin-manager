@@ -14,6 +14,62 @@ from ovos_utils.messagebus import get_mycroft_bus
 from ovos_plugin_manager.utils.config import get_plugin_config
 
 
+<<<<<<< Updated upstream
+=======
+class IOTDeviceType(str, enum.Enum):
+    """ recognized device types handled by commonIOT"""
+    SENSOR = "sensor"
+    PLUG = "plug"
+    SWITCH = "switch"
+    BULB = "bulb"
+    RGB_BULB = "bulbRGB"
+    RGBW_BULB = "bulbRGBW"
+    TV = "tv"
+    RADIO = "radio"
+    HEATER = "heater"
+    AC = "ac"
+    VENT = "vent"
+    HUMIDIFIER = "humidifier"
+    THERMOSTAT = "thermostat"
+    CAMERA = "camera"
+    MEDIA_PLAYER = "media_player"
+    VACUUM = "vacuum"
+
+
+class IOTCapabilties(enum.Enum):
+    """ actions recognized by commonIOT and exposed by voice intents """
+    REPORT_STATUS = enum.auto()
+    TURN_ON = enum.auto()
+    TURN_OFF = enum.auto()
+    SLEEP = enum.auto()
+    WAKEUP = enum.auto()
+    REBOOT = enum.auto()
+    REPORT_POWER = enum.auto()
+    BLINK_LIGHT = enum.auto()
+    BEACON_LIGHT = enum.auto()
+    REPORT_COLOR = enum.auto()
+    CHANGE_COLOR = enum.auto()
+    REPORT_BRIGHTNESS = enum.auto()
+    CHANGE_BRIGHTNESS = enum.auto()
+    GET_PICTURE = enum.auto()
+    PAUSE_PLAYBACK = enum.auto()
+    RESUME_PLAYBACK = enum.auto()
+    STOP_PLAYBACK = enum.auto()
+    NEXT_PLAYBACK = enum.auto()
+    PREV_PLAYBACK = enum.auto()
+    REPORT_CHANNEL = enum.auto()
+    CHANGE_CHANNEL = enum.auto()
+    REPORT_VOLUME = enum.auto()
+    CHANGE_VOLUME = enum.auto()
+    REPORT_APPS = enum.auto()
+    CHANGE_APP = enum.auto()
+    REPORT_TEMP = enum.auto()
+    CHANGE_TEMP = enum.auto()
+    REPORT_INPUT = enum.auto()
+    CHANGE_INPUT = enum.auto()
+    SEND_COMMAND = enum.auto()
+
+>>>>>>> Stashed changes
 class IOTScannerPlugin:
     def __init__(self, bus=None, name="", config=None):
         self.config_core = Configuration()
@@ -105,6 +161,190 @@ class Bulb(IOTDevicePlugin):
     def __init__(self, device_id, host=None, name="generic_bulb", raw_data=None):
         super().__init__(device_id, host, name, raw_data)
 
+<<<<<<< Updated upstream
+=======
+class Switch(Plug):
+    def __init__(self, device_id, host=None, name="generic_switch",
+                 area=None, device_type=IOTDeviceType.SWITCH, raw_data=None):
+        super().__init__(device_id, host, name, area, device_type, raw_data)
+
+
+class MediaPlayer(Plug):
+    capabilities = Plug.capabilities + [
+        PAUSE_PLAYBACK,
+        RESUME_PLAYBACK,
+        STOP_PLAYBACK,
+        NEXT_PLAYBACK,
+        PREV_PLAYBACK,
+        CHANGE_VOLUME
+    ]
+
+    def __init__(self, device_id, host=None, name="generic_media_player",
+                 area=None, device_type=IOTDeviceType.MEDIA_PLAYER, raw_data=None):
+        super().__init__(device_id, host, name, area, device_type, raw_data)
+
+    def resume(self):
+        raise NotImplemented
+
+    def stop(self):
+        raise NotImplemented
+
+    def pause(self):
+        raise NotImplemented
+
+    def play_next(self):
+        raise NotImplemented
+
+    def play_prev(self):
+        raise NotImplemented
+
+    def volume_up(self, steps=None):
+        raise NotImplemented
+
+    def volume_down(self, steps=None):
+        raise NotImplemented
+
+    def mute(self):
+        raise NotImplemented
+
+    def unmute(self):
+        raise NotImplemented
+
+class Radio(MediaPlayer):
+    def __init__(self, device_id, host=None, name="generic_radio",
+                 area=None, device_type=IOTDeviceType.RADIO, raw_data=None):
+        super().__init__(device_id, host, name, area, device_type, raw_data)
+
+    # TODO - basic radion actions, change_station etc
+
+class TV(MediaPlayer):
+    """ Handles things that a basic, no frills TV can do.
+        Such as volume, channel, and input.
+        Think non-smart tv with IR remote
+    """
+    capabilities = MediaPlayer.capabilities + [
+        CHANGE_CHANNEL
+    ]
+    def __init__(self, device_id, host=None, name="generic_tv",
+                 area=None, device_type=IOTDeviceType.TV, raw_data=None):
+        super().__init__(device_id, host, name, area, device_type, raw_data)
+
+    # TODO - basic tv actions, change_channel, stuff an IR remote can do
+    def channel_up(self):
+        raise NotImplemented
+
+    def channel_down(self):
+        raise NotImplemented
+
+    def set_channel(self, channel=None):
+        raise NotImplemented
+
+    def change_input(self, selected_input=None):
+        raise NotImplemented
+
+class SmartTV(TV):
+    """ Takes the TV stuff and adds things a Smart TV should be able to handle.
+        Apps, and getting values instead of just setting.
+    """
+    capabilities = TV.capabilities + [
+        SLEEP,
+        WAKEUP,
+        REBOOT,
+        REPORT_POWER,
+        REPORT_VOLUME,
+        REPORT_CHANNEL,
+        REPORT_APPS,
+        CHANGE_APP
+    ]
+
+    def __init__(self, _device_id, host=None, name="generic_smart_tv",
+                 area=None, device_type=IOTDeviceType.TV, raw_data=None):
+        super().__init__(device_id, host, name, area, device_type, raw_data)
+
+    def sleep(self):
+        raise NotImplemented
+
+    def wakeup(self):
+        raise NotImplemented
+
+    def reboot(self):
+        raise NotImplemented
+
+    def power_state(self):
+        raise NotImplemented
+
+    def get_volume(self):
+        raise NotImplemented
+
+    def set_volume(self, volume=None):
+        raise NotImplemented
+
+    def get_channel(self):
+        raise NotImplemented
+
+    def get_apps(self):
+        raise NotImplemented
+
+    def set_app(self, app=None):
+        raise NotImplemented
+
+    def send_command(self, command=None):
+        raise NotImplemented
+
+class Heater(Plug):
+    def __init__(self, device_id, host=None, name="generic_heater",
+                 area=None, device_type=IOTDeviceType.HEATER, raw_data=None):
+        super().__init__(device_id, host, name, area, device_type, raw_data)
+
+    # only has on/off for now
+    # TODO - get temperature
+
+
+class AirConditioner(Plug):
+    def __init__(self, device_id, host=None, name="generic_ac",
+                 area=None, device_type=IOTDeviceType.AC, raw_data=None):
+        super().__init__(device_id, host, name, area, device_type, raw_data)
+
+    # only has on/off for now
+    # TODO - get temperature
+
+class Vent(Plug):
+    def __init__(self, device_id, host=None, name="generic_vent",
+                 area=None, device_type=IOTDeviceType.VENT, raw_data=None):
+        super().__init__(device_id, host, name, area, device_type, raw_data)
+
+class Humidifier(Plug):
+    def __init__(self, device_id, host=None, name="generic_humidifier",
+                 area=None, device_type=IOTDeviceType.HUMIDIFIER, raw_data=None):
+        super().__init__(device_id, host, name, area, device_type, raw_data)
+
+class Thermostat(Plug):
+    def __init__(self, device_id, host=None, name="generic_thermostat",
+                 area=None, device_type=IOTDeviceType.THERMOSTAT, raw_data=None):
+        super().__init__(device_id, host, name, area, device_type, raw_data)
+
+class Vacuum(Plug):
+    def __init__(self, device_id, host=None, name="generic_vacuum",
+                 area=None, device_type=IOTDeviceType.VACUUM, raw_data=None):
+        super().__init__(device_id, host, name, area, device_type, raw_data)
+
+    # only has on/off for now
+    # TODO - vacuum stuff
+
+
+class Bulb(Plug):
+    capabilities = Plug.capabilities + [
+        IOTCapabilties.REPORT_BRIGHTNESS,
+        IOTCapabilties.CHANGE_BRIGHTNESS,
+        IOTCapabilties.BLINK_LIGHT,
+        IOTCapabilties.BEACON_LIGHT
+    ]
+
+    def __init__(self, device_id, host=None, name="generic_bulb",
+                 area=None, device_type=IOTDeviceType.BULB, raw_data=None):
+        super().__init__(device_id, host, name, area, device_type, raw_data)
+
+>>>>>>> Stashed changes
     def change_color(self, color="white"):
         if isinstance(color, Color):
             if color.rgb255 == (0, 0, 0):
@@ -395,3 +635,76 @@ class RGBWBulb(RGBBulb):
             "state": self.is_on,
             "raw": self.raw_data
         }
+
+class SmartTV(IOTDevicePlugin):
+    def __init__(self, device_id, host=None, name="generic_smart_tv", raw_data=None):
+        super().__init__(device_id, host, name, raw_data)
+
+    @property
+    def volume(self):
+        return self._volume
+
+    @property
+    def channel(self):
+        return self._channel
+
+    @property
+    def active_app(self):
+        return self._active_app
+
+    @property
+    def as_dict(self):
+        return {
+            "host": self.host,
+            "name": self.name,
+            "device_type": "smarttv",
+            "state": self.is_on,
+            "volume": self.volume,
+            "channel": self.channel,
+            "active_app": self.active_app,
+            "raw": self.raw_data
+        }
+
+    def sleep(self):
+        pass
+
+    def wakeup(self):
+        pass
+
+    def reboot(self):
+        pass
+
+    def volume_up(self, amount=None):
+        self.volume += amount or 5
+
+    def volume_down(self, amount=None):
+        self.volume -= amount or 5
+
+    def mute(self):
+        pass
+
+    def unmute(self):
+        pass
+
+    def get_channel(self):
+        return self.channel
+
+    def set_channel(self, channel):
+        """To be handled by downstream plugin"""
+        pass
+
+    def channel_up(self):
+        self.channel += 1
+
+    def channel_down(self):
+        self.channel -= 1
+
+    def get_active_app(self, message=None):
+        return self.active_app
+
+    def set_active_app(self, message=None):
+        """To be handled by downstream plugin"""
+        pass
+
+    def get_apps(self, message=None):
+        pass
