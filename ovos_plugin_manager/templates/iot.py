@@ -445,7 +445,6 @@ class Bulb(Plug):
                  area=None, device_type=IOTDeviceType.BULB, raw_data=None):
         super().__init__(device_id, host, name, area, device_type, raw_data)
 
->>>>>>> Stashed changes
     def change_color(self, color="white"):
         if isinstance(color, Color):
             if color.rgb255 == (0, 0, 0):
