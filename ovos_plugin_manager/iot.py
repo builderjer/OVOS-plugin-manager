@@ -1,6 +1,6 @@
 from ovos_plugin_manager.utils import load_plugin, find_plugins, PluginTypes, PluginConfigTypes
 from ovos_config import Configuration
-from ovos_plugin_manager.templates.iot import IOTDevicePlugin, IOTScannerPlugin
+from ovos_plugin_manager.templates.iot import IOTDeviceType, IOTScannerPlugin
 
 
 def find_iot_plugins():

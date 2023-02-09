@@ -3,10 +3,11 @@ import random
 import time
 from threading import Thread
 from time import sleep
+import enum
 
 from ovos_config import Configuration
 from ovos_utils import camel_case_split
-from ovos_utils.colors import Color
+from lingua_franca.util.colors import Color
 from ovos_utils.json_helper import merge_dict
 from ovos_utils.log import LOG
 from ovos_utils.messagebus import get_mycroft_bus
@@ -220,12 +221,12 @@ class Switch(Plug):
 
 class MediaPlayer(Plug):
     capabilities = Plug.capabilities + [
-        PAUSE_PLAYBACK,
-        RESUME_PLAYBACK,
-        STOP_PLAYBACK,
-        NEXT_PLAYBACK,
-        PREV_PLAYBACK,
-        CHANGE_VOLUME
+        IOTCapabilties.PAUSE_PLAYBACK,
+        IOTCapabilties.RESUME_PLAYBACK,
+        IOTCapabilties.STOP_PLAYBACK,
+        IOTCapabilties.NEXT_PLAYBACK,
+        IOTCapabilties.PREV_PLAYBACK,
+        IOTCapabilties.CHANGE_VOLUME
     ]
 
     def __init__(self, device_id, host=None, name="generic_media_player",
@@ -272,7 +273,7 @@ class TV(MediaPlayer):
         Think non-smart tv with IR remote
     """
     capabilities = MediaPlayer.capabilities + [
-        CHANGE_CHANNEL
+        IOTCapabilties.CHANGE_CHANNEL
     ]
     def __init__(self, device_id, host=None, name="generic_tv",
                  area=None, device_type=IOTDeviceType.TV, raw_data=None):
@@ -296,14 +297,14 @@ class SmartTV(TV):
         Apps, and getting values instead of just setting.
     """
     capabilities = TV.capabilities + [
-        SLEEP,
-        WAKEUP,
-        REBOOT,
-        REPORT_POWER,
-        REPORT_VOLUME,
-        REPORT_CHANNEL,
-        REPORT_APPS,
-        CHANGE_APP
+        IOTCapabilties.SLEEP,
+        IOTCapabilties.WAKEUP,
+        IOTCapabilties.REBOOT,
+        IOTCapabilties.REPORT_POWER,
+        IOTCapabilties.REPORT_VOLUME,
+        IOTCapabilties.REPORT_CHANNEL,
+        IOTCapabilties.REPORT_APPS,
+        IOTCapabilties.CHANGE_APP
     ]
 
     def __init__(self, _device_id, host=None, name="generic_smart_tv",
@@ -369,8 +370,8 @@ class SmartTV(TV):
 
 class Thermostat(Plug):
     capabilities = Plug.capabilities + [
-        REPORT_TEMP,
-        CHANGE_TEMP]
+        IOTCapabilties.REPORT_TEMP,
+        IOTCapabilties.CHANGE_TEMP]
 
     def __init__(self, device_id, host=None, name="generic_thermostat",
                  area=None, device_type=IOTDeviceType.THERMOSTAT, raw_data=None):
@@ -735,76 +736,3 @@ class RGBWBulb(RGBBulb):
             "state": self.is_on,
             "raw": self.raw_data
         }
-
-class SmartTV(IOTDevicePlugin):
-    def __init__(self, device_id, host=None, name="generic_smart_tv", raw_data=None):
-        super().__init__(device_id, host, name, raw_data)
-
-    @property
-    def volume(self):
-        return self._volume
-
-    @property
-    def channel(self):
-        return self._channel
-
-    @property
-    def active_app(self):
-        return self._active_app
-
-    @property
-    def as_dict(self):
-        return {
-            "host": self.host,
-            "name": self.name,
-            "device_type": "smarttv",
-            "state": self.is_on,
-            "volume": self.volume,
-            "channel": self.channel,
-            "active_app": self.active_app,
-            "raw": self.raw_data
-        }
-
-    def sleep(self):
-        pass
-
-    def wakeup(self):
-        pass
-
-    def reboot(self):
-        pass
-
-    def volume_up(self, amount=None):
-        self.volume += amount or 5
-
-    def volume_down(self, amount=None):
-        self.volume -= amount or 5
-
-    def mute(self):
-        pass
-
-    def unmute(self):
-        pass
-
-    def get_channel(self):
-        return self.channel
-
-    def set_channel(self, channel):
-        """To be handled by downstream plugin"""
-        pass
-
-    def channel_up(self):
-        self.channel += 1
-
-    def channel_down(self):
-        self.channel -= 1
-
-    def get_active_app(self, message=None):
-        return self.active_app
-
-    def set_active_app(self, message=None):
-        """To be handled by downstream plugin"""
-        pass
-
-    def get_apps(self, message=None):
-        pass
