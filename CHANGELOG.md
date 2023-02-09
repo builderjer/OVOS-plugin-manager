@@ -2,7 +2,35 @@
 
 ## [Unreleased](https://github.com/OpenVoiceOS/ovos-plugin-manager/tree/HEAD)
 
-[Full Changelog](https://github.com/OpenVoiceOS/ovos-plugin-manager/compare/V0.0.21a7...HEAD)
+[Full Changelog](https://github.com/OpenVoiceOS/ovos-plugin-manager/compare/V0.0.22a2...HEAD)
+
+**Implemented enhancements:**
+
+- feat/generalize runtime requirements [\#118](https://github.com/OpenVoiceOS/ovos-plugin-manager/pull/118) ([JarbasAl](https://github.com/JarbasAl))
+
+## [V0.0.22a2](https://github.com/OpenVoiceOS/ovos-plugin-manager/tree/V0.0.22a2) (2023-02-02)
+
+[Full Changelog](https://github.com/OpenVoiceOS/ovos-plugin-manager/compare/V0.0.22a1...V0.0.22a2)
+
+**Fixed bugs:**
+
+- fix/entrypoint\_loading [\#117](https://github.com/OpenVoiceOS/ovos-plugin-manager/pull/117) ([JarbasAl](https://github.com/JarbasAl))
+
+## [V0.0.22a1](https://github.com/OpenVoiceOS/ovos-plugin-manager/tree/V0.0.22a1) (2023-01-28)
+
+[Full Changelog](https://github.com/OpenVoiceOS/ovos-plugin-manager/compare/V0.0.21...V0.0.22a1)
+
+**Merged pull requests:**
+
+- help out with misconfigured TTS modules [\#101](https://github.com/OpenVoiceOS/ovos-plugin-manager/pull/101) ([osheroff](https://github.com/osheroff))
+
+## [V0.0.21](https://github.com/OpenVoiceOS/ovos-plugin-manager/tree/V0.0.21) (2023-01-24)
+
+[Full Changelog](https://github.com/OpenVoiceOS/ovos-plugin-manager/compare/V0.0.21a8...V0.0.21)
+
+## [V0.0.21a8](https://github.com/OpenVoiceOS/ovos-plugin-manager/tree/V0.0.21a8) (2023-01-22)
+
+[Full Changelog](https://github.com/OpenVoiceOS/ovos-plugin-manager/compare/V0.0.21a7...V0.0.21a8)
 
 **Fixed bugs:**
 
