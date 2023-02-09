@@ -13,9 +13,6 @@ from ovos_utils.messagebus import get_mycroft_bus
 
 from ovos_plugin_manager.utils.config import get_plugin_config
 
-
-<<<<<<< Updated upstream
-=======
 class IOTDeviceType(str, enum.Enum):
     """ recognized device types handled by commonIOT"""
     SENSOR = "sensor"
@@ -26,15 +23,19 @@ class IOTDeviceType(str, enum.Enum):
     RGBW_BULB = "bulbRGBW"
     TV = "tv"
     RADIO = "radio"
-    HEATER = "heater"
-    AC = "ac"
-    VENT = "vent"
-    HUMIDIFIER = "humidifier"
+
+    # Maybe bundle these in the thermostat.
+    # These devices only turn on and off, actual control is from a thermostat.
+    # Even if it is stand-alone, it still has a thermostat
+
+    # HEATER = "heater"
+    # AC = "ac"
+    # VENT = "vent"
+    # HUMIDIFIER = "humidifier"
     THERMOSTAT = "thermostat"
     CAMERA = "camera"
     MEDIA_PLAYER = "media_player"
     VACUUM = "vacuum"
-
 
 class IOTCapabilties(enum.Enum):
     """ actions recognized by commonIOT and exposed by voice intents """
@@ -65,11 +66,12 @@ class IOTCapabilties(enum.Enum):
     CHANGE_APP = enum.auto()
     REPORT_TEMP = enum.auto()
     CHANGE_TEMP = enum.auto()
+    REPORT_HUMID = enum.auto()
+    CHANGE_HUMID = enum.auto()
     REPORT_INPUT = enum.auto()
     CHANGE_INPUT = enum.auto()
     SEND_COMMAND = enum.auto()
 
->>>>>>> Stashed changes
 class IOTScannerPlugin:
     def __init__(self, bus=None, name="", config=None):
         self.config_core = Configuration()
@@ -89,29 +91,42 @@ class IOTScannerPlugin:
         return None
 
 
-class IOTDevicePlugin:
-    def __init__(self, device_id, host=None, name=None, raw_data=None):
+class IOTAbstractDevice:
+    capabilities = []
+
+    def __init__(self, device_id, host=None, name="abstract_device",
+                 area=None, device_type=IOTDeviceType.SENSOR,
+                 raw_data=None):
+        self._device_type = device_type
         self._device_id = device_id
         self._name = name or self.__class__.__name__
         self._host = host
-        self._raw = [raw_data] or [{"name": name, "host": host}]
+        self._area = area
+        self._raw = raw_data or {
+            "name": name, "host": host,
+            "area": area, "device_id": device_id}
         self.mode = ""
         self._timer = None
-
-    def reset(self):
-        self.mode = ""
-        self._timer = None
-        self.turn_on()
 
     @property
     def as_dict(self):
         return {
             "host": self.host,
+            "device_id": self.device_id,
             "name": self.name,
-            "device_type": self.raw_data.get("device_type", "generic"),
+            "area": self.device_area,
+            "device_type": self.device_type,
             "state": self.is_on,
             "raw": self.raw_data
         }
+
+    @property
+    def device_id(self):
+        return self._device_id
+
+    @property
+    def device_type(self):
+        return self._device_type
 
     @property
     def host(self):
@@ -123,10 +138,7 @@ class IOTDevicePlugin:
 
     @property
     def raw_data(self):
-        data = {}
-        for x in self._raw:
-            merge_dict(data, x)
-        return data
+        return self._raw
 
     @property
     def is_online(self):
@@ -139,6 +151,45 @@ class IOTDevicePlugin:
     @property
     def is_off(self):
         return not self.is_on
+
+    @property
+    def device_display_model(self):
+        # for usage in GUI, TODO document format
+        return {}
+
+    @property
+    def device_area(self):
+        # TODO document format
+        return self._area
+
+    def __repr__(self):
+        return self.name + ":" + self.host
+
+
+class Sensor(IOTAbstractDevice):
+    capabilities = [
+        IOTCapabilties.REPORT_STATUS
+    ]
+
+    def __init__(self, device_id, host=None, name="generic_sensor",
+                 area=None, device_type=IOTDeviceType.SENSOR, raw_data=None):
+        super().__init__(device_id, host, name, area, device_type, raw_data)
+
+
+class Plug(Sensor):
+    capabilities = Sensor.capabilities + [
+        IOTCapabilties.TURN_ON,
+        IOTCapabilties.TURN_OFF
+    ]
+
+    def __init__(self, device_id, host=None, name="generic_plug",
+                 area=None, device_type=IOTDeviceType.PLUG, raw_data=None):
+        super().__init__(device_id, host, name, area, device_type, raw_data)
+
+    def reset(self):
+        self.mode = ""
+        self._timer = None
+        self.turn_on()
 
     # status change
     def turn_on(self):
@@ -157,12 +208,10 @@ class IOTDevicePlugin:
         return self.name + ":" + self.host
 
 
-class Bulb(IOTDevicePlugin):
+class Bulb(Plug):
     def __init__(self, device_id, host=None, name="generic_bulb", raw_data=None):
         super().__init__(device_id, host, name, raw_data)
 
-<<<<<<< Updated upstream
-=======
 class Switch(Plug):
     def __init__(self, device_id, host=None, name="generic_switch",
                  area=None, device_type=IOTDeviceType.SWITCH, raw_data=None):
@@ -291,37 +340,89 @@ class SmartTV(TV):
     def send_command(self, command=None):
         raise NotImplemented
 
-class Heater(Plug):
-    def __init__(self, device_id, host=None, name="generic_heater",
-                 area=None, device_type=IOTDeviceType.HEATER, raw_data=None):
-        super().__init__(device_id, host, name, area, device_type, raw_data)
-
-    # only has on/off for now
-    # TODO - get temperature
-
-
-class AirConditioner(Plug):
-    def __init__(self, device_id, host=None, name="generic_ac",
-                 area=None, device_type=IOTDeviceType.AC, raw_data=None):
-        super().__init__(device_id, host, name, area, device_type, raw_data)
-
-    # only has on/off for now
-    # TODO - get temperature
-
-class Vent(Plug):
-    def __init__(self, device_id, host=None, name="generic_vent",
-                 area=None, device_type=IOTDeviceType.VENT, raw_data=None):
-        super().__init__(device_id, host, name, area, device_type, raw_data)
-
-class Humidifier(Plug):
-    def __init__(self, device_id, host=None, name="generic_humidifier",
-                 area=None, device_type=IOTDeviceType.HUMIDIFIER, raw_data=None):
-        super().__init__(device_id, host, name, area, device_type, raw_data)
+# class Heater(Plug):
+#     def __init__(self, device_id, host=None, name="generic_heater",
+#                  area=None, device_type=IOTDeviceType.HEATER, raw_data=None):
+#         super().__init__(device_id, host, name, area, device_type, raw_data)
+#
+#     # only has on/off for now
+#     # TODO - get temperature
+#
+#
+# class AirConditioner(Plug):
+#     def __init__(self, device_id, host=None, name="generic_ac",
+#                  area=None, device_type=IOTDeviceType.AC, raw_data=None):
+#         super().__init__(device_id, host, name, area, device_type, raw_data)
+#
+#     # only has on/off for now
+#     # TODO - get temperature
+#
+# class Vent(Plug):
+#     def __init__(self, device_id, host=None, name="generic_vent",
+#                  area=None, device_type=IOTDeviceType.VENT, raw_data=None):
+#         super().__init__(device_id, host, name, area, device_type, raw_data)
+#
+# class Humidifier(Plug):
+#     def __init__(self, device_id, host=None, name="generic_humidifier",
+#                  area=None, device_type=IOTDeviceType.HUMIDIFIER, raw_data=None):
+#         super().__init__(device_id, host, name, area, device_type, raw_data)
 
 class Thermostat(Plug):
+    capabilities = Plug.capabilities + [
+        REPORT_TEMP,
+        CHANGE_TEMP]
+
     def __init__(self, device_id, host=None, name="generic_thermostat",
                  area=None, device_type=IOTDeviceType.THERMOSTAT, raw_data=None):
         super().__init__(device_id, host, name, area, device_type, raw_data)
+
+    def get_temp(self, area=None):
+        raise NotImplemented
+
+    def set_temp(self, temp=None, area=None):
+        raise NotImplemented
+
+    def temp_up(self, steps=None, area=None):
+        raise NotImplemented
+
+    def temp_down(self, steps=None, area=None):
+        raise NotImplemented
+
+    def get_humidity(self, area=None):
+        raise NotImplemented
+
+    def set_humidity(self, humidity=None, area=None):
+        raise NotImplemented
+
+    def humidity_up(self, steps=None, area=None):
+        raise NotImplemented
+
+    def humidity_down(self, steps=None, area=None):
+        raise NotImplemented
+
+    def turn_heater_on(self, area=None):
+        raise NotImplemented
+
+    def turn_heater_off(self, area=None):
+        raise NotImplemented
+
+    def turn_ac_on(self, area=None):
+        raise NotImplemented
+
+    def turn_ac_off(self, area=None):
+        raise NotImplemented
+
+    def turn_vent_on(self, area=None):
+        raise NotImplemented
+
+    def turn_vent_off(self, area=None):
+        raise NotImplemented
+
+    def turn_humidifier_on(self, area=None):
+        raise NotImplemented
+
+    def turn_humidifier_off(self, area=None):
+        raise NotImplemented
 
 class Vacuum(Plug):
     def __init__(self, device_id, host=None, name="generic_vacuum",
